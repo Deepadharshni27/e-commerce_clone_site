@@ -6,32 +6,29 @@ document.addEventListener('DOMContentLoaded', () => {
     showHome();
 });
 
-// Fetch and display all products
-async function fetchProducts() {
-    try {
-        const response = await fetch('http://localhost:8080/api/products');
-        if (!response.ok) {
-            if (response.status === 404) throw new Error('Products not found.');
-            throw new Error('Failed to fetch products.');
-        }
-        const products = await response.json();
-        const productList = document.getElementById('home-section');
-        productList.innerHTML = '';
-        products.forEach(product => {
-            const productCard = document.createElement('div');
-            productCard.className = 'product-card';
-            productCard.innerHTML = `
-                <h3>${product.name}</h3>
-                <p>by ${product.brand}</p>
-                <p>₹${parseFloat(product.price).toFixed(2)}</p>
-                <button onclick="addToCart(${product.id}, '${product.name}', ${product.price})">Add To Cart</button>
-            `;
-            productList.appendChild(productCard);
-        });
-    } catch (error) {
-        alert(error.message);
-        console.error('Error fetching products:', error);
+// Fetch and display all products from localStorage
+function fetchProducts() {
+    const storedProducts = JSON.parse(localStorage.getItem('products')) || [];
+
+    const productList = document.getElementById('home-section');
+    productList.innerHTML = '';
+
+    if (storedProducts.length === 0) {
+        productList.innerHTML = '<p>No products available.</p>';
+        return;
     }
+
+    storedProducts.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card';
+        productCard.innerHTML = `
+            <h3>${product.name}</h3>
+            <p>by ${product.brand}</p>
+            <p>₹${parseFloat(product.price).toFixed(2)}</p>
+            <button onclick="addToCart(${product.id}, '${product.name}', ${product.price})">Add To Cart</button>
+        `;
+        productList.appendChild(productCard);
+    });
 }
 
 // Add product to cart
@@ -116,9 +113,10 @@ function validateProduct(product) {
     return true;
 }
 
-// Add a new product
-async function addProduct() {
+// Add a new product to localStorage
+function addProduct() {
     const product = {
+        id: Date.now(),
         name: document.getElementById('name').value.trim(),
         brand: document.getElementById('brand').value.trim(),
         price: parseFloat(document.getElementById('price').value) || 0,
@@ -127,31 +125,21 @@ async function addProduct() {
         category: document.getElementById('category').value.trim(),
         description: document.getElementById('description').value.trim()
     };
-    console.log('Product payload:', product); // Log the payload for debugging
+
     if (!validateProduct(product)) return;
-    try {
-        const response = await fetch('http://localhost:8080/api/products', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(product)
-        });
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Failed to add product: ${errorText || 'Server error'}`);
-        }
-        const savedProduct = await response.json();
-        console.log('Product saved:', savedProduct); // Log the response
-        document.getElementById('name').value = '';
-        document.getElementById('brand').value = '';
-        document.getElementById('price').value = '';
-        document.getElementById('quantity').value = '';
-        document.getElementById('availability').value = '';
-        document.getElementById('category').value = '';
-        document.getElementById('description').value = '';
-        alert('Product added successfully!');
-        showHome();
-    } catch (error) {
-        alert(error.message);
-        console.error('Error adding product:', error);
-    }
+
+    const products = JSON.parse(localStorage.getItem('products')) || [];
+    products.push(product);
+    localStorage.setItem('products', JSON.stringify(products));
+
+    document.getElementById('name').value = '';
+    document.getElementById('brand').value = '';
+    document.getElementById('price').value = '';
+    document.getElementById('quantity').value = '';
+    document.getElementById('availability').value = '';
+    document.getElementById('category').value = '';
+    document.getElementById('description').value = '';
+
+    alert('Product added successfully!');
+    showHome();
 }
