@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telusko E-Commerce</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="nav-left">
+            <a href="#" class="logo">Avengers</a>
+            <a href="#" onclick="showHome()">Home</a>
+            <a href="#" onclick="showAddProduct()">Add Product</a>
+            <!-- <div class="dropdown">
+                <a href="#" class="dropbtn">Categories ▼</a>
+                <div class="dropdown-content">
+                    <a href="#">Laptops</a>
+                    <a href="#">Phones</a>
+                    <a href="#">Headphones</a>
+                    <a href="#">Shoes</a>
+                </div>
+            </div> -->
+        </div>
+        <div class="nav-right">
+            <div class="cart" onclick="showCart()">
+                <span>🛒</span> Cart <span id="cart-count">0</span>
+            </div>
+            <input type="text" placeholder="Search" disabled>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Home Section (Product Listing) -->
+        <section id="home-section" class="product-list">
+            <!-- Products will be dynamically inserted here -->
+        </section>
+
+        <!-- Add Product Section -->
+        <section id="add-product-section" class="form-section" style="display: none;">
+            <h2>Add New Product</h2>
+            <div class="form-grid">
+                <input type="text" id="name" placeholder="Product Name">
+                <input type="text" id="brand" placeholder="Brand">
+                <input type="number" id="price" placeholder="Price" step="0.01">
+                <input type="number" id="quantity" placeholder="Quantity">
+                <select id="availability">
+                    <option value="" disabled selected>Select Availability</option>
+                    <option value="In Stock">In Stock</option>
+                    <option value="Out of Stock">Out of Stock</option>
+                </select>
+                <input type="text" id="category" placeholder="Category">
+                <textarea id="description" placeholder="Description"></textarea>
+                <button onclick="addProduct()">Add Product</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Cart Modal -->
+    <div class="modal" id="cart-modal">
+        <div class="modal-content">
+            <h2>Shopping Cart</h2>
+            <div id="cart-items">
+                <!-- Cart items will be dynamically inserted here -->
+            </div>
+            <div class="actions">
+                <button class="cancel-btn" onclick="closeCart()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
